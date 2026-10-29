@@ -10,3 +10,4 @@ data/raw/*
 data/output/*
 !data/.gitkeep
 .DS_Store
+infrastructure/terraform/terraform.tfvars
