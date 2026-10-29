@@ -1,0 +1,7 @@
+# Copy this file to terraform.tfvars and change bucket_name to a globally unique name.
+# Example bucket name: nyc-taxi-lake-yashu-2026-<random-suffix>
+# Do not commit terraform.tfvars; it may contain account-specific values.
+bucket_name        = "replace-with-a-unique-lowercase-bucket-name"
+aws_region         = "ap-south-1"
+resource_prefix    = "nyc-taxi"
+glue_database_name = "taxi_lakehouse"
