@@ -1,0 +1,1 @@
+run_date,input_rows,input_size_mb,valid_rows,quarantined_rows,local_runtime_seconds,glue_runtime_seconds,output_parquet_mb,athena_query_seconds,athena_bytes_scanned,estimated_cost_usd,notes

@@ -1,0 +1,7 @@
+{
+  "required_columns": ["tpep_pickup_datetime", "tpep_dropoff_datetime"],
+  "output_format": "parquet",
+  "dataset": "NYC TLC Yellow Taxi",
+  "default_year": 2024,
+  "default_month": 1
+}

@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.env
+.terraform/
+*.tfstate
+*.tfstate.*
+data/raw/*
+data/output/*
+!data/.gitkeep
+.DS_Store
