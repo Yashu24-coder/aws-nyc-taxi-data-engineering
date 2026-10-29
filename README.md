@@ -102,12 +102,16 @@ S3 storage/requests, Glue job runtime, and Athena bytes scanned can incur charge
 
 To remove infrastructure **after checking the Terraform plan**:
 
-```bash
-terraform -chdir=infrastructure/terraform plan -destroy
-terraform -chdir=infrastructure/terraform destroy
-```
+1. Back up anything you want to keep.
+2. In the S3 console, empty the project bucket, including **all object versions and delete markers** (the bucket has versioning enabled). This removes the input, outputs, Glue script object, temporary files, and Athena results.
+3. From the repository root, review and run:
 
-Destroying the stack can delete cloud infrastructure; back up any output you want to keep first. Terraform's local state file is required for cleanup—keep it private and do not commit it.
+   ```bash
+   terraform -chdir=infrastructure/terraform plan -destroy
+   terraform -chdir=infrastructure/terraform destroy
+   ```
+
+Destroying the stack removes cloud infrastructure. Terraform's local state file is required for cleanup—keep it private and do not commit it.
 
 ## Data quality rules
 
