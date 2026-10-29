@@ -50,8 +50,9 @@ GOLD_URI="s3://$BUCKET/gold/daily_metrics/"
 TEMP_URI="s3://$BUCKET/tmp/"
 
 echo "Starting AWS Glue ETL job..."
+JOB_ARGS="{\"--INPUT_PATH\":\"$INPUT_URI\",\"--SILVER_PATH\":\"$SILVER_URI\",\"--GOLD_PATH\":\"$GOLD_URI\",\"--TempDir\":\"$TEMP_URI\"}"
 RUN_ID="$(aws glue start-job-run --job-name "$JOB_NAME" \
-  --arguments "--INPUT_PATH=$INPUT_URI,--SILVER_PATH=$SILVER_URI,--GOLD_PATH=$GOLD_URI,--TempDir=$TEMP_URI" \
+  --arguments "$JOB_ARGS" \
   --query 'JobRunId' --output text)"
 echo "Glue JobRunId: $RUN_ID"
 
@@ -60,7 +61,7 @@ while true; do
   echo "Glue status: $STATUS"
   case "$STATUS" in
     SUCCEEDED) break ;;
-    FAILED|TIMEOUT|STOPPED|ERROR) 
+    FAILED|TIMEOUT|STOPPED|ERROR)
       aws glue get-job-run --job-name "$JOB_NAME" --run-id "$RUN_ID" --query 'JobRun.ErrorMessage' --output text || true
       exit 1
       ;;
@@ -70,7 +71,13 @@ done
 
 for CRAWLER in "$SILVER_CRAWLER" "$GOLD_CRAWLER"; do
   echo "Starting crawler $CRAWLER..."
-  aws glue start-crawler --name "$CRAWLER" || true
+  aws glue start-crawler --name "$CRAWLER"
+  # Wait for the crawler to enter RUNNING, then finish back at READY.
+  while true; do
+    STATE="$(aws glue get-crawler --name "$CRAWLER" --query 'Crawler.State' --output text)"
+    [[ "$STATE" == "RUNNING" ]] && break
+    sleep 5
+  done
   while true; do
     STATE="$(aws glue get-crawler --name "$CRAWLER" --query 'Crawler.State' --output text)"
     [[ "$STATE" == "READY" ]] && break
@@ -78,10 +85,11 @@ for CRAWLER in "$SILVER_CRAWLER" "$GOLD_CRAWLER"; do
   done
 done
 
+CLI_REGION="$(aws configure get region 2>/dev/null || true)"
 echo
 echo "Deployment and first ETL run finished."
 echo "Bucket: s3://$BUCKET/"
 echo "Glue database: $(terraform -chdir="$TF_DIR" output -raw glue_database_name)"
 echo "Athena workgroup: $(terraform -chdir="$TF_DIR" output -raw athena_workgroup_name)"
-echo "Open Athena in the $AWS_REGION region selected by your AWS profile/CLI."
+echo "Open Athena in configured AWS Region: ${CLI_REGION:-check your configured AWS Region}."
 echo "Remember to clean up resources when finished; see README.md."
