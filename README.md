@@ -1,5 +1,7 @@
 # AWS NYC Taxi Data Engineering Pipeline
 
+![CI](https://github.com/Yashu24-coder/aws-nyc-taxi-data-engineering/actions/workflows/ci.yml/badge.svg)
+
 A portfolio project demonstrating data ingestion, cleaning, analytics-ready datasets, and a deployable AWS data lakehouse foundation.
 
 ## Architecture
@@ -126,3 +128,11 @@ Use `docs/benchmark-template.csv` to record source rows/file size, valid/quarant
 ## Security
 
 Never commit AWS access keys, credentials, `terraform.tfvars`, Terraform state, or local data. Use IAM roles/least privilege and delete the resources when finished.
+
+## Author
+
+Built by **Kavali Yashwanth Royal**
+
+- GitHub: [@Yashu24-coder](https://github.com/Yashu24-coder)
+- LinkedIn: [yashwanth-royal-kavali](https://www.linkedin.com/in/yashwanth-royal-kavali-226378259)
+- Email: yashwanthroyal9133@gmail.com
